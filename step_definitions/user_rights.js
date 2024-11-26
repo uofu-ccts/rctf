@@ -71,6 +71,9 @@ Given("I select the User Right named {string} and choose {string}", (text, optio
             })
         })
 
+    } else if(text === "Double Data Entry" && window.compareVersions.compare(Cypress.env('redcap_version'), '12.0.0', '>=')){
+        cy.get(`input[type=radio][name="double_data"]`).check(window.doubleDataEntryMappings[option])
+
     } else {
 
         cy.get('input[name="' + window.singleChoiceMappings[text] + '"]').

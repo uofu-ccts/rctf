@@ -33,6 +33,12 @@ window.singleChoiceMappings = {
     'Lock/Unlock Records' : 'lock_record'
 }
 
+window.doubleDataEntryMappings = {
+    'Reviewer' : '0',
+    'Person #1' : '1',
+    'Person #2' : '2'
+}
+
 //These apply to REDCap v12+
 window.dataExportMappings = {
     'No Access' : '0',
