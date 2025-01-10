@@ -152,8 +152,8 @@ window.projectModules = {
 //Make sure to keep the blank choice - we want to default to first option
 window.elementChoices = {
     '' : 'html',
-    ' on the tooltip' : 'div[class*=tooltip]:visible',
-    ' in the tooltip' : 'div[class*=tooltip]:visible',
+    ' on the tooltip' : 'div[class*=tooltip]:visible,div[id*=Tooltip]:visible',
+    ' in the tooltip' : 'div[class*=tooltip]:visible,div[id*=Tooltip]:visible',
     ' on the role selector dropdown' : 'div[id=assignUserDropdownDiv]:visible,div[id=userClickTooltip]:visible',
     ' in the role selector dropdown' : 'div[id=assignUserDropdownDiv]:visible,div[id=userClickTooltip]:visible',
     ' on the dialog box' : 'div[role=dialog]:visible',
@@ -274,6 +274,7 @@ window.tableHtmlElements = {
 
 window.fieldAction = {
     'edit': 'edit-field',
+    'edit matrix': 'edit-matrix',
     'branching logic': 'branchinglogic',
     'copy': 'copy-field',
     'move': 'move-field',

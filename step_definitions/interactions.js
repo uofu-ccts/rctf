@@ -268,8 +268,11 @@ Given("I click on( ){articleType}( ){onlineDesignerButtons}( ){ordinal}( )button
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Clicks on an anchor element with a specific text label.
  */
-Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (designer_field_icons, file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
+Given("I (click)(locate) on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( ){linkNames}( ){labeledExactly} {string}{saveButtonRouteMonitoring}{toDownloadFile}{baseElement}", (ordinal, designer_field_icons, file_repo_icons, link_name, exactly, text, link_type, download, base_element) => {
     before_click_monitor(link_type)
+
+    let ord = 0
+    if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
 
     cy.not_loading()
 
@@ -295,23 +298,23 @@ Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( 
 
         outer_element = `tr${contains}:visible`
         cy.top_layer(`a:visible`, outer_element).within(() => {
-            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).eq(ord).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for Data Quality Rule #") {
         outer_element = `table:visible tr:has(div.rulenum:contains(${JSON.stringify(text)})):visible`
         cy.top_layer(`a:visible`, outer_element).within(() => {
-            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).eq(ord).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for the Discrepant field labeled") {
         outer_element = `table:visible tr:has(:contains(${JSON.stringify(text)})):visible`
         cy.top_layer(`a:visible`, outer_element).within(() => {
-            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).eq(ord).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for the variable") {
         const legacy_selector = `table[id*=design-]:contains(${JSON.stringify(`Variable: ${text}`)}):visible`
         const current_selector = `table[id*=design-]:contains(${JSON.stringify(`Field Name: ${text}`)}):visible`
         cy.top_layer(`a:visible`, `${legacy_selector},${current_selector}`).within(() => {
-            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).scrollIntoView().click({force: true})
+            cy.get(`${window.onlineDesignerFieldIcons[designer_field_icons]}`).eq(ord).scrollIntoView().click({force: true})
         })
     } else if(exactly === "for the File Repository file named"){
         outer_element = `${window.tableMappings['file repository']}:visible tr:has(:contains(${JSON.stringify(text)}))`
@@ -319,7 +322,7 @@ Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( 
             if(file_repo_icons === undefined){
                 file_repo_icons = designer_field_icons
             }
-            cy.get(`${window.fileRepoIcons[file_repo_icons]}`).click()
+            cy.get(`${window.fileRepoIcons[file_repo_icons]}`).eq(ord).click()
         })
     } else if(exactly === "within the Record Locking Customization table for the Data Collection Instrument named"){
         outer_element = `${window.tableMappings['record locking']}:visible tr:has(:contains(${JSON.stringify(text)}))`
@@ -327,18 +330,18 @@ Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( 
             if(file_repo_icons === undefined){
                 file_repo_icons = designer_field_icons
             }
-            cy.get(`${window.onlineDesignerFieldIcons[file_repo_icons]}`).click()
+            cy.get(`${window.onlineDesignerFieldIcons[file_repo_icons]}`).eq(ord).click()
         })
     } else if(exactly === 'labeled exactly') {
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
-            cy.get('a:visible').contains(new RegExp("^" + text + "$", "g")).click()
+            cy.get('a:visible').contains(new RegExp("^" + text + "$", "g")).eq(ord).click()
         })
     } else if(download.includes('with records in')) {
         let keyword = download.includes('rows') ? 'rows' : 'columns'
 
         cy.top_layer(`a:contains(${JSON.stringify(text)}):visible`, outer_element).within(() => {
             //Note: This is a pretty brittle approach, but it works ... best way to handle this weird edge case where we are looking for "Download your Data Import Template", which has two hits
-            cy.get(`a:contains(${JSON.stringify(text)}):visible`).eq(keyword === "rows" ? 0 : 1).contains(text).click()
+            cy.get(`a:contains(${JSON.stringify(text)}):visible`).eq(keyword === "rows" ? 0 : 1).contains(text).eq(ord).click()
         })
 
     } else {
@@ -350,9 +353,9 @@ Given("I (click)(locate) on the( ){onlineDesignerFieldIcons}( ){fileRepoIcons}( 
                         url: '/redcap_v' + Cypress.env('redcap_version') + "/*FileRepositoryController:getBreadcrumbs*"
                     }).as('file_breadcrumbs')
                     //cy.get($elm).invoke('attr', 'onclick')
-                    cy.get($elm).click()
+                    cy.get($elm).eq(ord).click()
                 } else {
-                    cy.wrap($elm).click()
+                    cy.wrap($elm).eq(ord).click()
                 }
             })
         })
@@ -385,29 +388,42 @@ Given("I click on the button labeled {string} for the row labeled {string}", (te
  * @param {string} label - the label of the field
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  */
-Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {string}{baseElement}{iframeVisibility}', (enter_type, text, input_type, label, base_element, iframe) => {
+Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} field( ){columnLabel}( ){labeledExactly} {string}{baseElement}{iframeVisibility}', (enter_type, text, ordinal, input_type, column, labeled_exactly, label, base_element, iframe) => {
     let select = 'input[type=text]:visible,input[type=password]:visible'
     if(input_type === 'password'){
         select = 'input[type=password]:visible'
     }
 
+    let ord = 0
+    if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
+
     if(iframe === " in the iframe"){
         const base = cy.frameLoaded().then(() => { cy.iframe() })
 
         if(input_type === 'password'){
-            select = 'input[type=password]:visible:first'
+            select = 'input[type=password]:visible'
         } else {
-            select = `input[type=text]:visible:first,input[type=password]:visible:first`
+            select = `input[type=text]:visible,input[type=password]:visible`
         }
         base.within(() => {
             let elm = cy.get(select)
 
             if(enter_type === "enter"){
-                elm.scrollIntoView().type(text)
+                elm.eq(ord).scrollIntoView().type(text)
             } else if (enter_type === "clear field and enter") {
-                elm.scrollIntoView().clear().type(text)
+                elm.eq(ord).scrollIntoView().clear().type(text)
             } else if (enter_type === "verify"){
-                elm.scrollIntoView().invoke('val').should('include', text)
+                elm.eq(ord).scrollIntoView().invoke('val').should('include', text)
+            }
+        })
+
+    } else if (column === 'in the Matrix column') {
+
+        cy.table_cell_by_column_and_row_label(label, '', 'table', 'td', 'td', ord, 'table.addFieldMatrixRowParent', true).then(($td) => {
+            if(enter_type === "enter"){
+                cy.wrap($td).find('input:visible').type(text)
+            } else if (enter_type === "clear field and enter") {
+                cy.wrap($td).find('input:visible').clear().type(text)
             }
         })
 
@@ -423,23 +439,29 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
         outer_element.within(() => {
             let elm = null
 
-            cy.contains(label).should('be.visible').then(($label) => {
+            let label_base = labeled_exactly === 'labeled exactly' ?
+                cy.contains(new RegExp("^" + label + "$", "g")) :
+                cy.contains(label)
+
+            label_base.should('be.visible').then(($label) => {
                 cy.wrap($label).parent().then(($parent) =>{
                     if($parent.find(element).length){
-                        elm = cy.wrap($parent).find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                        console.log('parent ')
+                        elm = cy.wrap($parent).find(element).eq(ord).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
                     } else if ($parent.parent().find(element).length) {
-                        elm = cy.wrap($parent).parent().find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                        console.log('parent parent ')
+                        elm = cy.wrap($parent).parent().find(element).eq(ord).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
                     }
 
                     if(enter_type === "enter"){
-                        elm.first().type(text)
+                        elm.eq(ord).type(text)
                     } else if (enter_type === "clear field and enter") {
-                        elm.first().clear().type(text)
+                        elm.eq(ord).clear().type(text)
                     } else if (enter_type === "verify"){
                         if(window.dateFormats.hasOwnProperty(text)){
                             //elm.invoke('val').should('match', window.dateFormats[text])
                         } else {
-                            elm.first().invoke('val').should('include', text)
+                            elm.eq(ord).invoke('val').should('include', text)
                         }
                     }
                 })
@@ -459,10 +481,13 @@ Given('I {enterType} {string} (into)(is within) the {inputType} field labeled {s
  * @description Enters a specific text string into a field identified by a label.  (NOTE: The field is not automatically cleared.)
  */
 
-Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {string}{baseElement}', (enter_type, text, labeled_exactly, label, base_element) => {
+Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledExactly} {string}{baseElement}', (enter_type, text, ordinal, labeled_exactly, label, base_element) => {
     let sel = `:contains(${JSON.stringify(label)}):visible`
 
-    let element = `textarea:first`
+    let ord = 0
+    if(ordinal !== undefined) ord = window.ordinalChoices[ordinal]
+
+    let element = `textarea`
 
     //Turns out the logic editor uses a DIV with an "Ace Editor" somehow /shrug
     if(label === "Logic Editor") {
@@ -479,48 +504,48 @@ Given ('I {enterType} {string} in(to) the textarea field {labeledExactly} {strin
 
         cy.contains(label).should('be.visible').then(($label) => {
             cy.wrap($label).parent().then(($parent) =>{
-                if($parent.find(element).length){
+                if($parent.find(element).eq(ord).length){
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.find(element).hasClass('mceEditor')){
-                        cy.customSetTinyMceContent($parent.find(element)[0]['id'], text)
+                        cy.customSetTinyMceContent($parent.eq(ord).attr('id'), text)
 
                         //All other cases
                     } else {
                         if(enter_type === "enter"){
-                            cy.wrap($parent).find(element).type(text)
+                            cy.wrap($parent).find(element).eq(ord).type(text)
                         } else if (enter_type === "clear field and enter") {
-                            cy.wrap($parent).find(element).clear().type(text)
+                            cy.wrap($parent).find(element).eq(ord).clear().type(text)
                         } else if(enter_type === "click on"){
-                            cy.wrap($parent).find(element).click()
+                            cy.wrap($parent).find(element).eq(ord).click()
                         }
                     }
 
 
-                } else if ($parent.parent().find(element).length) {
+                } else if ($parent.parent().find(element).eq(ord).length) {
 
                     //If the textarea has a TinyMCE editor applied to it
-                    if($parent.parent().find(element).hasClass('mceEditor')){
-                        cy.setTinyMceContent($parent.parent().find(element)[0]['id'], text)
+                    if($parent.parent().find(element).eq(ord).hasClass('mceEditor')){
+                        cy.setTinyMceContent($parent.eq(ord).attr('id'), text)
 
                     //All other cases
                     } else {
                         if(enter_type === "enter"){
-                            cy.wrap($parent).parent().find(element).type(text)
+                            cy.wrap($parent).parent().find(element).eq(ord).type(text)
                         } else if (enter_type === "clear field and enter") {
 
                             //Logic editor does not use an actual textarea; we need to invoke the text instead!
                             if(label === "Logic Editor"){
-                              cy.wrap($parent).parent().find(element).
+                              cy.wrap($parent).parent().find(element).eq(ord).
                                 click({force: true}).
                                 invoke('attr', 'contenteditable', 'true').
                                 type(`{selectall} {backspace} {backspace} ${text}`, {force: true})
                             } else {
-                                cy.wrap($parent).parent().find(element).clear().type(text)
+                                cy.wrap($parent).parent().find(element).eq(ord).clear().type(text)
                             }
 
                         } else if(enter_type === "click on"){
-                            cy.wrap($parent).parent().find(element).click()
+                            cy.wrap($parent).parent().find(element).eq(ord).click()
                         }
                     }
                 }
@@ -1008,10 +1033,10 @@ Given('I move the Hour slider for the open date picker widget to {int}', (hour) 
         cy.wrap(subject).find('span').trigger('mousedown', {force: true})
 
         //Get the current position of the slider and then increment up or down respectively
-        cy.get('.ui_tpicker_time').then(($time) => {
-            const time = $time.text().split(':')
+        cy.get('.ui_tpicker_time_input').then(($time) => {
+            const time = $time.val().split(':')
             let $hour = time[0]
-            cy.move_slider(subject, $hour, 23, 0, hour, "Hour", 20)
+            cy.move_slider(subject, $hour, 23, 0, hour, "Hour")
         })
     })
 })
@@ -1028,10 +1053,10 @@ Given('I move the Minute slider for the open date picker widget to {int}', (min)
         cy.wrap(subject).find('span').trigger('mousedown', {force: true})
 
         //Get the current position of the slider and then increment up or down respectively
-        cy.get('.ui_tpicker_time').then(($time) => {
-            const time = $time.text().split(':')
+        cy.get('.ui_tpicker_time_input').then(($time) => {
+            const time = $time.val().split(':')
             let $min = time[1]
-            cy.move_slider(subject, $min, 59, 0, min, "Minute", 20)
+            cy.move_slider(subject, $min, 59, 0, min, "Minute")
         })
     })
 })

@@ -3,20 +3,70 @@
 //#############################################################################
 
 Cypress.Commands.add("dragTo", { prevSubject: 'element'}, (subject, target) => {
-    let rect = cy.get(target).then((element) => {
-        return element[0].getBoundingClientRect()
-    })
 
-    //click on element
-    cy.wrap(subject).trigger('mousedown')
+    //Latest REDCap behavior - let's see that there is a Move Field with an <i> inside
+    if(Cypress.$('a[data-field-action="move-field"] i').length){
 
-    //move mouse to new position
-    cy.get(target).trigger('mousemove', 'bottom')
-        .trigger('mousemove', 'center')
+        // Uncomment if REDCap changes drag and drop functionality ...
+        // It will save you time by seeing what Event handlers are doing
+        //
+        // cy.window().then((win) => {
+        //     const eventsToMonitor = [
+        //         'change',
+        //         'click',
+        //         'keydown',
+        //         'mousedown',
+        //         'mousemove',
+        //         'pointerdown',
+        //         'dragstart',
+        //         'dragend',
+        //         'dragenter',
+        //         'dragleave',
+        //         'drop',
+        //         'dragover',
+        //     ];
+        //
+        //     // Wrap each handler to log the event
+        //     eventsToMonitor.forEach((eventType) => {
+        //         win.document.addEventListener(eventType, (event) => {
+        //             console.log(`Event: ${eventType}`, event);
+        //         })
+        //     })
+        // })
 
-    // target position changed, mouseup on original element
-    cy.wrap(subject).trigger('mouseup')
+        // We need this included as part of the event trigger object!
+        const dataTransfer = new DataTransfer() // See this for specs: https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer
 
+        //Cannot figure out why, but the srcElement kept being this <i> instead of <a> even when we selected <a> ...
+        //If you look at REDCap source code ... element MUST be an <a> ... okay, brute force remove it for the test!
+        cy.wrap(subject).find('a[data-field-action="move-field"] i')
+            .invoke('remove')
+
+        //That's better.  Now, start the drag from the <a> that no longer has an <i> to interfere
+        cy.wrap(subject).find('a[data-field-action="move-field"]')
+            .trigger('dragstart', { dataTransfer: dataTransfer })
+
+        //This is key ... we trigger these events on the target, so we don't have to mess with X / Y coordinates
+        cy.get(target)
+            .trigger('dragenter', { dataTransfer: dataTransfer })
+            .trigger('dragover', { dataTransfer: dataTransfer })
+            .trigger('drop', { dataTransfer: dataTransfer })
+            .trigger('dragend', { dataTransfer: dataTransfer })
+
+    //This is the legacy behavior
+    } else {
+        console.log('Legacy Drag-n-Drop Behavior')
+
+        //click on element
+        cy.wrap(subject).trigger('mousedown')
+
+        //move mouse to new position
+        cy.get(target).trigger('mousemove', 'bottom')
+            .trigger('mousemove', 'center')
+
+        // target position changed, mouseup on original element
+        cy.wrap(subject).trigger('mouseup')
+    }
 })
 
 Cypress.Commands.add("dragToTarget", { prevSubject: 'element'}, (subject, target) => {
@@ -40,7 +90,7 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
     row_label = escapeCssSelector(row_label)
 
     let selector = `${table_selector}:has(${header_row_type}:contains('${column_label}'):visible):visible`
-    let td_selector = `tr:has(${row_cell_type}:visible):first:visible`
+    let td_selector = `tr:has(${row_cell_type}:visible):visible`
 
     if(row_number === 0) {
         if(table_selector !== body_table){
@@ -49,15 +99,17 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
             selector = `${table_selector}:has(${row_cell_type}:contains('${row_label}'):visible,${header_row_type}:contains('${column_label}'):visible):visible`
         }
 
-        td_selector = `tr:has(${row_cell_type}:contains('${row_label}'):visible):first:visible`
+        td_selector = `tr:has(${row_cell_type}:contains('${row_label}'):visible):visible`
     }
 
     cy.get(selector).first().within(() => {
         cy.get(`${header_row_type}:contains('${column_label}'):visible`).parent('tr').then(($tr) => {
-            $tr.find(header_row_type).each((thi, th) => {
+            cy.wrap($tr).find(header_row_type).each((thi, th) => {
                 // console.log(Cypress.$(th).text().trim().includes(orig_column_label))
                 // console.log(thi)
-                if (Cypress.$(th).text().trim().includes(orig_column_label) && column_num === 0) column_num = thi
+                cy.log(Cypress.$(thi).text().trim())
+                if (Cypress.$(thi).text().trim().includes(orig_column_label) && column_num === 0) column_num = th
+                //if (Cypress.$(thi).text().trim().includes(orig_column_label) && column_num === 0) cy.log(`Column Index: ${th}`)
                 //if (Cypress.$(th).text().trim().includes(column_label) && column_num === 0) console.log(thi)
             })
         })
@@ -72,18 +124,16 @@ Cypress.Commands.add("table_cell_by_column_and_row_label", (column_label, row_la
         }
 
         cy.get(selector).first().within(() => {
-            cy.get(td_selector).then(($td) => {
-                $td.each(($tri, $tr) => {
-                    cy.wrap($tr).each((tri, tr) => {
-                        tri.find(row_cell_type).each((tdi, td) => {
-                            if (tdi === column_num && $tri === row_number){
-                                console.log(column_num)
-                                table_cell = td
-                            }
-                        })
-                    })
+            cy.get(td_selector).eq(row_number).each(($tr, $tri) => {
+                cy.wrap($tr).find(row_cell_type).each((td, tdi) => {
+                    // cy.log(`COL: ${column_num}`)
+                    // cy.log(`ROW: ${row_number}`)
+                    if (tdi === column_num){
+                        table_cell = td
+                    }
                 })
             })
+
         }).then(() => {
             cy.wrap(table_cell)
         })
