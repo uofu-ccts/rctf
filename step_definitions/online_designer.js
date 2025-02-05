@@ -187,7 +187,7 @@ Given("I click on the {addField} input button below the field named {string}", (
  * @module OnlineDesigner
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @example I click on the {editField} image for the field named {string}
- * @param {string} editField - available options: 'Edit', 'Branching Logic', 'Copy', 'Move', 'Delete Field'
+ * @param {string} editField - available options: 'Edit', 'Edit Matrix', 'Branching Logic', 'Copy', 'Move', 'Delete Field'
  * @param {string} field - the name of the field you want to edit
  * @description Clicks on the image link of the action you want to perform on a field
  */
@@ -265,13 +265,13 @@ Given("I drag (on )the field variable named {string} {aboveBelow} the field vari
     cy.get('table[id*=design-]').then((rows) => {
         for(let i = 0; i < rows.length; i++){
             cy.wrap(rows.eq(i)).then((row) =>{
-                if(row.text().includes(`Variable: ${fieldAfter}\n`)){
+                if(row.text().includes(`Field Name: ${fieldAfter}\n`) || row.text().includes(`Variable: ${fieldAfter}\n`)){
                     field_index = aboveBelow === "above" ? i : i + 1
                 }
             })
         }
     }).then(() => {
-        cy.get('table[id*=design-]').contains(`Variable: ${fieldToMove}`).parents('table[id*=design-]').then((row) => {
+        cy.get(`table[id*=design-]:contains(${JSON.stringify(`Field Name: ${fieldToMove}`)}), table[id*=design-]:contains(${JSON.stringify(`Variable: ${fieldToMove}`)})`).then((row) => {
             cy.get('table[id*=design-]').eq(field_index).as('target')
             cy.wrap(row).dragTo('@target')
         })
@@ -304,9 +304,9 @@ Given("I should see (a )(the )field named {string} {beforeAfter} field named {st
  * @description Creates a new field in the Online Designer
  */
 Given("I add a new {fieldType} field labeled {string} with variable name {string} and click on the {string} button", (field_type, field_text, variable_name, save_button_text) => {
-    const legacy_selector = `${JSON.stringify(`Variable: ${variable_name}`)}`
-    const current_selector = `${JSON.stringify(`Field Name: ${variable_name}`)}`
-
+    const legacy_selector = `table[id*=design-]:contains(${JSON.stringify(`Variable: ${variable_name}`)})`
+    const current_selector = `table[id*=design-]:contains(${JSON.stringify(`Field Name: ${variable_name}`)})`
+    
     cy.get('input#btn-last').click().then(() => {
         cy.get('select#field_type')
             .find('option')

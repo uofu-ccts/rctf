@@ -15,7 +15,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'userRightsChecks',
-            regexp: /|Project Setup & Design|User Rights|Data Access Groups|Stats & Charts|Create Records|Survey Distribution Tools|Add\/Edit\/Organize Reports|Alerts & Notifications|Rename Records|Delete Records|Calendar|Data Import Tool|Data Comparison Tool|Logging|File Repository|Record Locking Customization|Lock\/Unlock \*Entire\* Records|Lock\/Unlock \*Entire\* Records \(record level\)|Data Quality - Create & edit rules|Data Quality - Execute rules|API Export|API Import\/Update|REDCap Mobile App - Allow users to collect data offline in the mobile app|REDCap Mobile App - Allow user to download data for all records to the app\?/,
+            regexp: /|Project Setup & Design|User Rights|Data Access Groups|Stats & Charts|Create Records|Survey Distribution Tools|Add\/Edit\/Organize Reports|Alerts & Notifications|Rename Records|Delete Records|Calendar|Data Import Tool|Data Comparison Tool|Logging|File Repository|Record Locking Customization|Lock\/Unlock \*Entire\* Records|Lock\/Unlock \*Entire\* Records \(record level\)|Data Quality - Create & edit rules|Data Quality - Execute rules|API Export|API Import\/Update|REDCap Mobile App - Allow users to collect data offline in the mobile app|REDCap Mobile App - Allow user to download data for all records to the app\?|Calendar & Scheduling|Email Logging/,
         })
 
 defineParameterType({
@@ -80,17 +80,22 @@ defineParameterType({
 
 defineParameterType({
             name: 'check',
-            regexp: /|checked|unchecked/,
+            regexp: /|checked|unchecked|in the enabled state|in the disabled state/,
         })
 
 defineParameterType({
             name: 'checkBoxRadio',
-            regexp: /|checkbox|radio/,
+            regexp: /|checkbox|radio|toggle button/,
         })
 
 defineParameterType({
             name: 'clickType',
-            regexp: /|click on|check|uncheck/,
+            regexp: /|click on|check|uncheck|enable|disable/,
+        })
+
+defineParameterType({
+            name: 'columnLabel',
+            regexp: /||in the Matrix column/,
         })
 
 defineParameterType({
@@ -125,7 +130,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'editField',
-            regexp: /|Edit|Branching Logic|Copy|Move|Delete Field/,
+            regexp: /|Edit|Edit Matrix|Branching Logic|Copy|Move|Delete Field/,
         })
 
 defineParameterType({
@@ -175,7 +180,7 @@ defineParameterType({
 
 defineParameterType({
             name: 'labeledElement',
-            regexp: /|button|link|field|section break|checkbox/,
+            regexp: /|button|link|field|section break|checkbox|toggle button/,
         })
 
 defineParameterType({
