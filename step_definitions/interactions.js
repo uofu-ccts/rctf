@@ -445,12 +445,14 @@ Given('I {enterType} {string} (into)(is within) the( ){ordinal}( ){inputType} fi
 
             label_base.should('be.visible').then(($label) => {
                 cy.wrap($label).parent().then(($parent) =>{
+                    //We are ONLY filtering here - it is okay to return more than one, do NOT use .eq() yet
                     if($parent.find(element).length){
-                        console.log('parent ')
-                        elm = cy.wrap($parent).find(element).eq(ord).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                        //console.log('parent')
+                        elm = cy.wrap($parent).find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                    //We are also ONLY filtering here - it is okay to return more than one, do NOT use .eq() yet
                     } else if ($parent.parent().find(element).length) {
-                        console.log('parent parent ')
-                        elm = cy.wrap($parent).parent().find(element).eq(ord).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
+                        //console.log('parent parent ')
+                        elm = cy.wrap($parent).parent().find(element).filter((i, el) => !Cypress.$(el).parent().hasClass('ui-helper-hidden-accessible'))
                     }
 
                     if(enter_type === "enter"){
@@ -508,7 +510,7 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.find(element).hasClass('mceEditor')){
-                        cy.customSetTinyMceContent($parent.eq(ord).attr('id'), text)
+                       cy.customSetTinyMceContent($parent.find(element).eq(ord).attr('id'), text)
 
                         //All other cases
                     } else {
@@ -526,7 +528,7 @@ Given ('I {enterType} {string} in(to) the( ){ordinal}( )textarea field {labeledE
 
                     //If the textarea has a TinyMCE editor applied to it
                     if($parent.parent().find(element).eq(ord).hasClass('mceEditor')){
-                        cy.setTinyMceContent($parent.eq(ord).attr('id'), text)
+                        cy.customSetTinyMceContent($parent.parent().find(element).eq(ord).attr('id'), text)
 
                     //All other cases
                     } else {
@@ -639,14 +641,18 @@ Given('I clear the field labeled {string}', (label) => {
  * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @example I {clickType} the {checkBoxRadio} labeled {string} {baseElement}
- * @param {string} clickType - available options: 'click on', 'check', 'uncheck'
- * @param {string} checkBoxRadio - available options: 'checkbox', 'radio'
+ * @param {string} clickType - available options: 'click on', 'check', 'uncheck', 'enable', 'disable'
+ * @param {string} checkBoxRadio - available options: 'checkbox', 'radio', 'toggle button'
  * @param {string} label - the label associated with the checkbox field
  * @param {string} baseElement - available options: ' on the tooltip', ' in the tooltip', ' on the role selector dropdown', ' in the role selector dropdown', ' on the dialog box', ' in the dialog box', ' within the data collection instrument list', ' on the action popup', ' in the action popup', ' in the Edit survey responses column', ' in the "Main project settings" section', ' in the "Use surveys in this project?" row in the "Main project settings" section', ' in the "Use longitudinal data collection with defined events?" row in the "Main project settings" section', ' in the "Use the MyCap participant-facing mobile app?" row in the "Main project settings" section', ' in the "Enable optional modules and customizations" section', ' in the "Repeating instruments and events" row in the "Enable optional modules and customizations" section', ' in the "Auto-numbering for records" row in the "Enable optional modules and customizations" section', ' in the "Scheduling module (longitudinal only)" row in the "Enable optional modules and customizations" section', ' in the "Randomization module" row in the "Enable optional modules and customizations" section', ' in the "Designate an email field for communications (including survey invitations and alerts)" row in the "Enable optional modules and customizations" section', ' in the "Twilio SMS and Voice Call services for surveys and alerts" row in the "Enable optional modules and customizations" section', ' in the "SendGrid Template email services for Alerts & Notifications" row in the "Enable optional modules and customizations" section', ' in the validation row labeled "Code Postal 5 caracteres (France)"', ' in the validation row labeled "Date (D-M-Y)"', ' in the validation row labeled "Date (M-D-Y)"', ' in the validation row labeled "Date (Y-M-D)"', ' in the validation row labeled "Datetime (D-M-Y H:M)"', ' in the validation row labeled "Datetime (M-D-Y H:M)"', ' in the validation row labeled "Datetime (Y-M-D H:M)"', ' in the validation row labeled "Datetime w/ seconds (D-M-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (M-D-Y H:M:S)"', ' in the validation row labeled "Datetime w/ seconds (Y-M-D H:M:S)"', ' in the validation row labeled "Email"', ' in the validation row labeled "Integer"', ' in the validation row labeled "Letters only"', ' in the validation row labeled "MRN (10 digits)"', ' in the validation row labeled "MRN (generic)"', ' in the validation row labeled "Number"', ' in the validation row labeled "Number (1 decimal place - comma as decimal)"', ' in the validation row labeled "Number (1 decimal place)"', ' in the validation row labeled "Number (2 decimal places - comma as decimal)"', ' in the validation row labeled "Number (2 decimal places)"', ' in the validation row labeled "Number (3 decimal places - comma as decimal)"', ' in the validation row labeled "Number (3 decimal places)"', ' in the validation row labeled "Number (4 decimal places - comma as decimal)"', ' in the validation row labeled "Number (4 decimal places)"', ' in the validation row labeled "Number (comma as decimal)"', ' in the validation row labeled "Phone (Australia)"', ' in the validation row labeled "Phone (North America)"', ' in the validation row labeled "Phone (UK)"', ' in the validation row labeled "Postal Code (Australia)"', ' in the validation row labeled "Postal Code (Canada)"', ' in the validation row labeled "Postal Code (Germany)"', ' in the validation row labeled "Social Security Number (U.S.)"', ' in the validation row labeled "Time (HH:MM:SS)"', ' in the validation row labeled "Time (HH:MM)"', ' in the validation row labeled "Time (MM:SS)"', ' in the validation row labeled "Vanderbilt MRN"', ' in the validation row labeled "Zipcode (U.S.)"'
  * @description Selects a checkbox field by its label
  */
 Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optionalString}(\", I )(I ){clickType} the {checkBoxRadio} {labeledExactly} {string}{baseElement}{iframeVisibility}", (event_name, check, type, labeled_exactly, label, base_element, iframe) => {
     cy.not_loading()
+
+    //This is to accommodate for aliases such as "toggle button" which is actually a checkbox behind the scenes
+    check = window.checkBoxAliases.hasOwnProperty(check) ? window.checkBoxAliases[check] : check
+    type = window.checkBoxAliases.hasOwnProperty(type) ? window.checkBoxAliases[type] : type
 
     const elm = (iframe === " in the iframe") ? cy.frameLoaded().then(() => { cy.iframe() }) : null
 
@@ -660,10 +666,23 @@ Given("(for the Event Name \")(the Column Name \")(for the Column Name \"){optio
         element_selector = `tr:contains(${JSON.stringify(label)}):visible td input[type=${type}]:visible:not([disabled])`
     }
 
-    //Special case: "Repeating Instruments and events" popup to select instruments by checkbox
+    //Special case: "Repeating Instruments and events" popup to select instruments by checkbox OR Bulk Record Delete
     if(event_name.length > 0){
-        label_selector = `tr:contains(${JSON.stringify(event_name)}):visible`
-        element_selector = `tr:contains(${JSON.stringify(event_name)}):visible td:contains(${JSON.stringify(label)}):visible input[type=${type}]:visible:not([disabled])`
+
+        //Bulk record delete
+        if(Cypress.$(`#choose_select_forms_events_table`).length){
+            event_name = event_name.split('"')
+            event_name = event_name[1]
+            let event_num = event_name.split(' ')
+            event_num = event_num[1]
+
+            label_selector = `div:contains(${JSON.stringify(event_name)}):visible`
+            element_selector = `${label_selector} :contains(${JSON.stringify(label)}):visible input[value^="ef-event_${event_num}_"][value*="${label.replace(/\s+/g, '_')  // Replace spaces with underscores
+            .toLowerCase()}"][type=${type}]:visible:not([disabled])`
+        } else {
+            label_selector = `tr:contains(${JSON.stringify(event_name)}):visible`
+            element_selector = `tr:contains(${JSON.stringify(event_name)}):visible td:contains(${JSON.stringify(label)}):visible input[type=${type}]:visible:not([disabled])`
+        }
     }
 
     function clickElement(label_selector, outer_element, element_selector, label, labeled_exactly){
@@ -875,7 +894,7 @@ Given('I select {string} (in)(on) the {dropdownType} (field labeled)(of the open
 
                     if(type === "dropdown") {
                         cy.wait(500)
-                        cy.wrap($t).select(option)
+                        cy.wrap($t).select(option, { force: true }) //force: true needed for Select2 library
                         cy.wait(500)
                     } else if (type === "multiselect"){
                         let all_options = [option]
