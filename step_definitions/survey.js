@@ -14,6 +14,17 @@ const { Given } = require('@badeball/cypress-cucumber-preprocessor')
 
 /**
  * @module Survey
+ * @author Sumon Chattopadhyay <sumon.chattopadhyay@utah.edu>
+ * @example I enter the password {string} for e-signature
+ * @param {string} password - password
+ * @description Enters password when e-signing another form in the same session
+ */
+Given("I enter the password {string} for e-signature", (password) => {
+    cy.get('input[id="esign_password"').type(password)
+})
+
+/**
+ * @module Survey
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @param {string} survey_option_label - the label of the survey option specified
  * @param {string} tag - (optional) the value of the tag specified
