@@ -1233,6 +1233,16 @@ Given("I {clickType} the {elmType} element labeled {string}", (click_type, eleme
 
 /**
  * @module Interactions
+ * @author Ashley O'Connor <ashley.oconnor@utah.edu>
+ * @param {string} label - the label associated with the input button
+ * @description Selects the data comparison tool input button by its label 
+ */
+Given("I click on the input button labeled {string}", (label) => {
+    cy.get('input').should('have.value', label).click()
+})
+
+/**
+ * @module Interactions
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @param {string} name - the name attribute of the input file field
  * @param {string} path - the path of the file to upload
@@ -1266,9 +1276,10 @@ Given('I enter {string} into the field identified by {string} labeled {string}',
     // Method is because the input on Edit Reports doesn't have a label
     // Find the cell that contains the label and find the parent
     cy.get('td').contains(label).parents('tr').within(() => {
-        cy.get(selector).type(text)
+        cy.get(selector).type(text,  { force: true })
     })
 })
+
 
 /**
  * @module Interactions
