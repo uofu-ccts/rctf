@@ -120,6 +120,13 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
 })
 
 /**
+ * Step definition for verifying custom consent text
+ */
+Given("I should see a PDF containing the following text: {string}", (text) => {
+    cy.contains(text)
+})
+
+/**
  * @module Visibility
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @param {string} field_value - the text that should be displayed in the field
