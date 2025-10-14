@@ -120,7 +120,10 @@ Given("I (should )see a dialog containing the following text: {string}", (text) 
 })
 
 /**
- * Step definition for verifying custom consent text
+ * @module Interactions
+ * @author Ashley O'Connor <ashley.oconnor@utah.edu>
+ * @param {string} text - the text that should exist within a PDF
+ * @description Visually verifies that a PDF contains specific text
  */
 Given("I should see a PDF containing the following text: {string}", (text) => {
     cy.contains(text)

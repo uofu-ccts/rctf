@@ -1232,7 +1232,10 @@ Given("I {clickType} the {elmType} element labeled {string}", (click_type, eleme
 })
 
 /**
-* Step definition for data comparison tool button
+ * @module Interactions
+ * @author Ashley O'Connor <ashley.oconnor@utah.edu>
+ * @param {string} label - the label associated with the input button
+ * @description Selects the data comparison tool input button by its label 
  */
 Given("I click on the input button labeled {string}", (label) => {
     cy.get('input').should('have.value', label).click()
