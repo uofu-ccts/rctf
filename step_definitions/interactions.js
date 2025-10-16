@@ -858,6 +858,21 @@ Given("I click on the( ){ordinal}( ){onlineDesignerFieldIcons}( ){fileRepoIcons}
 
 /**
  * @module Interactions
+ * @author Ashley O'Connor <ashley.oconnor@utah.edu>
+ * @param {string} selector - the element class of the icon you want to click
+ * @description Clicks on a specific icon in the participant list
+ */  
+Given("I click on the {string} icon in the participant list",
+    (selector) => {
+      cy.get(selector)
+        .parent('a')
+        .invoke('removeAttr', 'target')
+        .click({ force: true })
+    }
+  );
+
+/**
+ * @module Interactions
  * @author Tintin Nguyen <tin-tin.nguyen@nih.gov>
  * @param {string} text - the text on the button element you want to click
  * @param {string} label - the lable of the row with the button you want to click
