@@ -1253,7 +1253,7 @@ Given("I {clickType} the {elmType} element labeled {string}", (click_type, eleme
  * @description Selects the data comparison tool input button by its label 
  */
 Given("I click on the input button labeled {string}", (label) => {
-    cy.get('input').should('have.value', label).click()
+    cy.get('input[value="' + label + '"]').click()
 })
 
 /**
