@@ -14,7 +14,8 @@
     "cypress-wait-until": "^3",
     "pdf-parse": "^1",
     "prompt-sync": "^4.2.0",
-    "sed-lite": "^0"
+    "sed-lite": "^0",
+    "shelljs": "^0.10.0"
   },
   "devDependencies": {
     "documentation": "github:documentationjs/documentation"
