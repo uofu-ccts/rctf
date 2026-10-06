@@ -796,13 +796,14 @@ Given("I should see the consent pdf has loaded in the iframe", () => {
  * @description Verifies text in an embedded consent PDF without relying on the browser PDF viewer DOM.
  */
 Given("I should see the embedded consent PDF containing {string}", (text) => {
-    let selector = '.pdfobject'
+    let selector = '.inline-pdf-viewer'
     if(Cypress.$('#econsent_confirm_checkbox_div').length !== 1){
         // On a survey consent page, there is one embedded PDF. Elsewhere, use the consent PDF container.
         selector = '.consent-form-pdf ' + selector
     }
 
-    cy.get(selector).invoke('prop', 'src').then((pdfUrl) => {
+    // The PDF.js iframe contains its HTML viewer. The parent container retains the original PDF URL.
+    cy.get(selector).invoke('attr', 'src').then((pdfUrl) => {
         cy.request({url: pdfUrl, encoding: 'base64'}).then(({body}) => {
             cy.task('readPdfBase64', {pdfBase64: body}).then((pdf) => {
                 expect(pdf.text).to.include(text)
