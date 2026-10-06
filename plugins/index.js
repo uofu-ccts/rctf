@@ -146,6 +146,10 @@ module.exports = (cypressOn, config) => {
             })
         },
 
+        readPdfBase64({pdfBase64}){
+            return pdf(Buffer.from(pdfBase64, 'base64'))
+        },
+
         saveCurrentURL(urlData) {
             let path = process.env.PWD + '/test_db/latest_url.info'
             return fs.writeFileSync(path, JSON.stringify(urlData, null, 2)) > 0

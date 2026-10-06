@@ -791,6 +791,28 @@ Given("I should see the consent pdf has loaded in the iframe", () => {
 
 /**
  * @module Visibility
+ * @author Sumon Chattopadhyay <sumon.chattopadhyay@utah.edu>
+ * @param {string} text - text expected in the embedded consent PDF
+ * @description Verifies text in an embedded consent PDF without relying on the browser PDF viewer DOM.
+ */
+Given("I should see the embedded consent PDF containing {string}", (text) => {
+    let selector = '.pdfobject'
+    if(Cypress.$('#econsent_confirm_checkbox_div').length !== 1){
+        // On a survey consent page, there is one embedded PDF. Elsewhere, use the consent PDF container.
+        selector = '.consent-form-pdf ' + selector
+    }
+
+    cy.get(selector).invoke('prop', 'src').then((pdfUrl) => {
+        cy.request({url: pdfUrl, encoding: 'base64'}).then(({body}) => {
+            cy.task('readPdfBase64', {pdfBase64: body}).then((pdf) => {
+                expect(pdf.text).to.include(text)
+            })
+        })
+    })
+})
+
+/**
+ * @module Visibility
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @param {string} recordId - ID of the record we are focused on
  * @param {string} instrument - instrument we are focused on
