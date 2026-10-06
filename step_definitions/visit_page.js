@@ -10,6 +10,32 @@ Given("I visit the REDCap login page", () => {
 
 /**
  * @module VisitPage
+ * @param {string} label - the visible label of the link
+ * @param {string} name - the name used to retrieve the saved URL
+ * @description Saves a visible link's destination for later navigation in the same scenario.
+ */
+Given("I save the URL linked by {string} as {string}", (label, name) => {
+    cy.getLabeledElement('link', label).then(($link) => {
+        const href = $link.prop('href')
+
+        expect(href, `URL linked by ${label}`).to.be.a('string').and.not.be.empty
+        cy.wrap(href).as(name)
+    })
+})
+
+/**
+ * @module VisitPage
+ * @param {string} name - the name used when the URL was saved
+ * @description Visits a URL saved earlier in the same scenario.
+ */
+Given("I visit the saved URL {string}", (name) => {
+    cy.get(`@${name}`).then((href) => {
+        cy.visit(href)
+    })
+})
+
+/**
+ * @module VisitPage
  * @author Mark McEver <mark.mcever@vumc.org>
  * @description Executes REDCap's crons and returns to the previous page
  */

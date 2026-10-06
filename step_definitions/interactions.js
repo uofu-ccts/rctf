@@ -36,6 +36,35 @@ function performAction(action, element, elementStatus){
 
 /**
  * @module Interactions
+ * @param {string} text - the confirmation email body
+ * @description Sets the survey confirmation email body through its TinyMCE editor.
+ */
+Given('I enter {string} into the survey confirmation email body', (text) => {
+    cy.window().then((win) => {
+        const editor = win.tinymce?.get('confirmation_email_content')
+
+        expect(editor, 'survey confirmation email editor').to.exist
+        editor.setContent(text)
+        editor.save()
+    })
+
+    cy.get('#confirmation_email_content').should('contain.value', text)
+})
+
+/**
+ * @module Interactions
+ * @description Opens the complete message for the first Email & SMS Logging result.
+ */
+Given('I click the View msg icon for the first email', () => {
+    cy.get('#table-email_search_table tbody tr')
+        .first()
+        .find('i.fa-envelope-open[title="Click to view entire message"]')
+        .closest('a')
+        .click()
+})
+
+/**
+ * @module Interactions
  * @author Adam De Fouw <aldefouw@medicine.wisc.edu>
  * @param {string} instrumentSaveOptions
  * @description Clicks a specific submit option to save a record on a Data Collection Instrument
